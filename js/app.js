@@ -1,5 +1,5 @@
-import { products } from "./products.js";
-import { renderShelves,renderChips } from "./shelves.js";
+import { products, categories } from "./products.js";
+import { renderShelves,renderChips,productArt } from "./shelves.js";
 import { readCart,addToCart,setQty,cartSummary } from "./cart.js";
 import { readWishlist,toggleWishlist } from "./wishlist.js";
 import { showProduct } from "./product-details.js";
@@ -18,7 +18,7 @@ function renderCart(){
  el.innerHTML=entries.length?entries.map(([id,qty])=>{const p=products.find(x=>x.id===id);return `<div class="cart-row"><div class="cart-thumb">${miniArt(p)}</div><div><h4>${p.name}</h4><small>${money(p.price)} · ${p.brand}</small><div class="qty-control"><button data-qty="${id}" data-delta="-1">−</button><b>${qty}</b><button data-qty="${id}" data-delta="1">+</button></div></div><b>${money(p.price*qty)}</b></div>`}).join(""):`<div class="empty-state"><b>Your bag is taking a little nap.</b>Find something lovely on the shelves and it will appear here.</div>`;
  el.querySelectorAll("[data-qty]").forEach(b=>b.onclick=()=>{setQty(b.dataset.qty,cart[b.dataset.qty]+Number(b.dataset.delta));renderCart();refreshHeader()});
 }
-function miniArt(p){return `<span style="font-size:32px">${({bottle:"♜",jar:"◉",eggs:"🥚",bread:"🥖",tech:"🎧",book:"▤",shoe:"👟",home:"⌂",pouch:"▰",bag:"▱",carton:"▯",box:"▣"})[p.kind]||"▣"}</span>`}
+function miniArt(p){return productArt(p)}
 function renderWishlist(){const list=readWishlist().map(id=>products.find(p=>p.id===id)).filter(Boolean);$("#wishlistItems").innerHTML=list.length?list.map(p=>`<div class="wishlist-row"><div class="wishlist-thumb">${miniArt(p)}</div><div><h4>${p.name}</h4><small>${money(p.price)}</small></div><button class="remove-button" data-unwish="${p.id}">Remove</button></div>`).join(""):`<div class="empty-state"><b>Keep a little list.</b>Tap the heart on a product to save it for later.</div>`;$("#wishlistItems").querySelectorAll("[data-unwish]").forEach(b=>{b.onclick=()=>{toggleWishlist(b.dataset.unwish);renderWishlist();refreshHeader()}})}
 function modalWish(id){const list=toggleWishlist(id),on=list.includes(id);document.querySelectorAll(`[data-heart="${CSS.escape(id)}"]`).forEach(b=>{b.classList.toggle("saved",on);b.textContent=on?"♥":"♡"});refreshHeader();toast(on?"Saved to your wishlist":"Removed from wishlist")}
 function heart(id,button){const list=toggleWishlist(id);button.classList.toggle("saved",list.includes(id));button.textContent=list.includes(id)?"♥":"♡";refreshHeader();toast(list.includes(id)?"Saved to your wishlist":"Removed from wishlist")}
@@ -40,4 +40,5 @@ suggestions.addEventListener("click",e=>{const item=e.target.closest("[data-resu
 document.addEventListener("click",e=>{if(!e.target.closest(".searchbox"))suggestions.classList.add("hidden")});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanels();if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){e.preventDefault();search.focus()}});
 $("#mobileMenu").onclick=()=>$("#categoryChips").scrollIntoView({behavior:"smooth"});
+$("#shelfCount").textContent=`${categories.length} departments`;
 refreshHeader();renderCart();
