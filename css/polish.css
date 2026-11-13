@@ -52,11 +52,11 @@ kbd{font-family:inherit;font-size:11px;background:#fff;box-shadow:0 1px 0 var(--
 .icon-button i{right:1px;top:2px;font-size:10px;font-weight:700;min-width:16px;height:16px;padding:0 4px;box-shadow:0 0 0 2px var(--cream)}
 .icon-button .dot{padding:0;right:10px;top:9px;box-shadow:0 0 0 2px var(--cream)}
 
-.cart-button{height:42px;border-radius:8px;padding:0 14px;font-size:12px;font-weight:600;box-shadow:0 4px 12px rgba(41,37,31,.18)}
-.cart-button:hover{background:#3a342b;transform:translateY(-1px);box-shadow:0 8px 18px rgba(41,37,31,.22)}
-.cart-button:active{transform:translateY(0) scale(.98)}
-.cart-button b{font-size:11px;width:20px;height:20px;font-weight:700}
-.cart-button strong{font-size:12px;font-variant-numeric:tabular-nums}
+.basket-button{height:42px;border-radius:8px;padding:0 14px;font-size:12px;font-weight:600;box-shadow:0 4px 12px rgba(41,37,31,.18)}
+.basket-button:hover{background:#3a342b;transform:translateY(-1px);box-shadow:0 8px 18px rgba(41,37,31,.22)}
+.basket-button:active{transform:translateY(0) scale(.98)}
+.basket-button b{font-size:11px;width:20px;height:20px;font-weight:700}
+.basket-button strong{font-size:12px;font-variant-numeric:tabular-nums}
 .mobile-menu{width:42px;height:42px;border-radius:50%}
 .mobile-menu:hover{background:#f3ece0}
 
@@ -158,12 +158,12 @@ footer{font-size:11px;gap:12px 20px;padding-top:26px;padding-bottom:30px}
 .checkout-button{padding:15px 18px}
 .demo-note{font-size:11px;margin-top:12px}
 
-.cart-row,.wishlist-row{gap:14px;padding:14px 0;grid-template-columns:68px 1fr auto}
-.cart-row:last-child,.wishlist-row:last-child{border-bottom:0}
-.cart-thumb,.wishlist-thumb{height:68px;border:1px solid #eadfcb}
-.cart-row h4,.wishlist-row h4{font-size:13px;line-height:1.35;margin:0 0 3px}
-.cart-row small,.wishlist-row small{font-size:11.5px}
-.cart-row>b{font-size:13px;font-variant-numeric:tabular-nums;align-self:start;padding-top:2px}
+.basket-row,.wishlist-row{gap:14px;padding:14px 0;grid-template-columns:68px 1fr auto}
+.basket-row:last-child,.wishlist-row:last-child{border-bottom:0}
+.basket-thumb,.wishlist-thumb{height:68px;border:1px solid #eadfcb}
+.basket-row h4,.wishlist-row h4{font-size:13px;line-height:1.35;margin:0 0 3px}
+.basket-row small,.wishlist-row small{font-size:11.5px}
+.basket-row>b{font-size:13px;font-variant-numeric:tabular-nums;align-self:start;padding-top:2px}
 .qty-control{gap:6px;margin-top:10px}
 .qty-control b{min-width:22px;text-align:center;font-size:13px;font-variant-numeric:tabular-nums}
 .qty-control button{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;padding:0 0 1px;line-height:1;font-size:15px;color:var(--ink)}
@@ -226,7 +226,7 @@ footer{font-size:11px;gap:12px 20px;padding-top:26px;padding-bottom:30px}
   .searchbox input{font-size:16px} /* prevents iOS focus-zoom */
   .header-actions{gap:2px}
   .icon-button,.mobile-menu{width:40px;height:40px}
-  .cart-button{height:40px;padding:0 11px}
+  .basket-button{height:40px;padding:0 11px}
   .hero{border-radius:12px}
   .hero-copy p{font-size:13.5px}
   .hero-meta{font-size:10.5px}
@@ -252,7 +252,7 @@ footer{font-size:11px;gap:12px 20px;padding-top:26px;padding-bottom:30px}
 }
 @media(max-width:380px){
   .topbar{gap:8px;padding:0 12px}
-  .cart-button{gap:7px;padding:0 9px}
+  .basket-button{gap:7px;padding:0 9px}
   .icon-button{width:36px}
   .view-all{display:none}
   .department-title{font-size:18px}
@@ -273,38 +273,65 @@ footer{font-size:11px;gap:12px 20px;padding-top:26px;padding-bottom:30px}
    market decorations and realistic supermarket shelving.
    ========================================================================== */
 
-/* ---------- Striped awning ---------- */
-.awning{--w:40px;--a:#b95e42;--b:#fbf1d9;--c:#71836b;
-  position:relative;margin:0 clamp(18px,5vw,76px);height:30px;z-index:6;
-  filter:drop-shadow(0 7px 5px rgba(60,35,20,.26))}
+/* ---------- Per-department striped awning ----------
+   Each department renders its own awning (see awning() in shelves.js).
+   --a / --c are that department's two stripe colours; cream is shared. */
+.awning{--w:34px;--b:#fbf1d9;position:relative;margin:0 2px;height:24px;z-index:6;
+  filter:drop-shadow(0 6px 4px rgba(60,35,20,.24))}
 .awning-roof,.awning-valance{
   background:repeating-linear-gradient(90deg,var(--a) 0 var(--w),var(--b) var(--w) calc(var(--w)*2),var(--c) calc(var(--w)*2) calc(var(--w)*3),var(--b) calc(var(--w)*3) calc(var(--w)*4))}
 .awning-roof{position:absolute;inset:0;border-radius:3px 3px 0 0;clip-path:polygon(2.2% 0,97.8% 0,100% 100%,0 100%)}
 .awning-roof:after,.awning-valance:after{content:"";position:absolute;inset:0;pointer-events:none}
 .awning-roof:after{background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(0,0,0,0) 45%,rgba(0,0,0,.1))}
-.awning-valance{position:absolute;left:0;right:0;top:29px;height:calc(var(--w)/2 + 1px);
+.awning-valance{position:absolute;left:0;right:0;top:23px;height:calc(var(--w)/2 + 1px);
   -webkit-mask:radial-gradient(circle at 50% 0,#000 calc(var(--w)/2 - .5px),transparent calc(var(--w)/2)) 0 0/var(--w) 100% repeat-x;
           mask:radial-gradient(circle at 50% 0,#000 calc(var(--w)/2 - .5px),transparent calc(var(--w)/2)) 0 0/var(--w) 100% repeat-x}
 .awning-valance:after{background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(0,0,0,0) 70%)}
-.awning-lantern{position:absolute;top:56px;width:15px;height:21px;border-radius:7px 7px 9px 9px;z-index:4;
-  background:radial-gradient(circle at 50% 42%,#fff0c4,#f2b84b 72%);
-  box-shadow:inset 0 0 0 2px #7a4a2f,0 0 16px 5px rgba(255,205,110,.5);animation:flicker 4s ease-in-out infinite}
-.awning-lantern:before{content:"";position:absolute;left:50%;bottom:100%;width:1px;height:22px;background:#6a4a35}
-.awning-lantern:after{content:"";position:absolute;left:-1px;right:-1px;top:-3px;height:5px;border-radius:3px;background:#7a4a2f}
-.lantern-l{left:5%}.lantern-r{right:5%;animation-delay:-2s}
-.awning-sign{position:absolute;left:50%;top:58px;transform:translateX(-50%);z-index:4;white-space:nowrap;
-  padding:6px 14px;border-radius:4px;font-size:9.5px;font-weight:800;letter-spacing:.18em;color:#fff4dc;
-  background:linear-gradient(180deg,#c68b59,#8a5234);box-shadow:inset 0 1px 0 rgba(255,235,205,.5),0 3px 6px rgba(60,35,20,.28);
-  transform-origin:50% -20px;animation:sway 6s ease-in-out infinite}
-.awning-sign:before,.awning-sign:after{content:"";position:absolute;top:-18px;width:1px;height:18px;background:#6a4a35}
+/* hanging sign (all departments) */
+.awning-sign{position:absolute;left:50%;top:42px;z-index:4;white-space:nowrap;transform:translateX(-50%);transform-origin:50% -18px;
+  padding:5px 13px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.17em;color:#fff4dc;
+  background:linear-gradient(180deg,#c68b59,#8a5234);box-shadow:inset 0 1px 0 rgba(255,235,205,.5),0 3px 6px rgba(60,35,20,.26);
+  animation:sway 6s ease-in-out infinite}
+.awning-sign:before,.awning-sign:after{content:"";position:absolute;top:-17px;width:1px;height:17px;background:#6a4a35}
 .awning-sign:before{left:18%}.awning-sign:after{right:18%}
-@keyframes flicker{0%,100%{box-shadow:inset 0 0 0 2px #7a4a2f,0 0 16px 5px rgba(255,205,110,.5)}50%{box-shadow:inset 0 0 0 2px #7a4a2f,0 0 20px 7px rgba(255,205,110,.62)}}
+/* decoration variant 1: lanterns */
+.awning-lantern{position:absolute;top:41px;width:14px;height:19px;border-radius:7px 7px 8px 8px;z-index:4;
+  background:radial-gradient(circle at 50% 42%,#fff0c4,#f2b84b 72%);
+  box-shadow:inset 0 0 0 2px #7a4a2f,0 0 14px 4px rgba(255,205,110,.5);animation:flicker 4s ease-in-out infinite}
+.awning-lantern:before{content:"";position:absolute;left:50%;bottom:100%;width:1px;height:18px;background:#6a4a35}
+.awning-lantern:after{content:"";position:absolute;left:-1px;right:-1px;top:-3px;height:5px;border-radius:3px;background:#7a4a2f}
+.lantern-l{left:6%}.lantern-r{right:6%;animation-delay:-2s}
+/* decoration variant 2: bunting flags */
+.awning-bunting{position:absolute;left:3%;right:3%;top:38px;height:19px;z-index:4;
+  background:repeating-linear-gradient(90deg,var(--a) 0 22px,var(--b) 22px 44px,var(--c) 44px 66px,var(--b) 66px 88px);
+  -webkit-mask:conic-gradient(from -30deg at 50% 100%,#000 60deg,transparent 0) 0 0/22px 100% repeat-x;
+          mask:conic-gradient(from -30deg at 50% 100%,#000 60deg,transparent 0) 0 0/22px 100% repeat-x;
+  filter:drop-shadow(0 2px 2px rgba(60,35,20,.2))}
+/* decoration variant 3: string lights */
+.awning-bulbs{position:absolute;left:3%;right:3%;top:37px;height:18px;z-index:4;
+  background:radial-gradient(circle at 11px 10px,#f2b84b 0 4px,transparent 4.6px),radial-gradient(circle at 33px 10px,#e8847a 0 4px,transparent 4.6px),radial-gradient(circle at 55px 10px,#7fbf8e 0 4px,transparent 4.6px);
+  background-size:66px 100%;filter:drop-shadow(0 0 4px rgba(255,205,110,.85));animation:flicker2 3.6s ease-in-out infinite}
+.awning-bulbs:before{content:"";position:absolute;left:0;right:0;top:4px;height:1px;background:#6a4a35;opacity:.7}
+@keyframes flicker{0%,100%{box-shadow:inset 0 0 0 2px #7a4a2f,0 0 14px 4px rgba(255,205,110,.5)}50%{box-shadow:inset 0 0 0 2px #7a4a2f,0 0 19px 6px rgba(255,205,110,.62)}}
+@keyframes flicker2{0%,100%{opacity:1}50%{opacity:.82}}
 @keyframes sway{0%,100%{transform:translateX(-50%) rotate(-1.2deg)}50%{transform:translateX(-50%) rotate(1.2deg)}}
 
-/* Floor sits under the awning and carries small decorations */
-.awning+.market-floor{border-top:0;border-radius:0 0 14px 14px;padding-top:84px;padding-bottom:92px}
-.awning+.market-floor:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+/* department rhythm: awning, signage head, shelf */
+.department{margin-bottom:38px}
+.department-head{padding-top:48px}
+.market-floor{padding-top:26px;padding-bottom:92px}
+.market-floor:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 64'%3E%3Cpath d='M30 38C14 36 9 20 16 6 27 12 34 26 30 38zM30 38C46 36 51 20 44 6 33 12 26 26 30 38z' fill='%237d9a68' stroke='%234f6a45' stroke-width='1.5'/%3E%3Cpath d='M30 38V4' stroke='%234f6a45' stroke-width='1.5'/%3E%3Cpath d='M16 42h28l-4 20H20z' fill='%23b95e42' stroke='%2391452f' stroke-width='1.5'/%3E%3Crect x='14' y='38' width='32' height='7' rx='2' fill='%23c9704f' stroke='%2391452f' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat left 22px bottom 14px/52px auto,url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 52'%3E%3Ccircle cx='20' cy='16' r='9' fill='%23d9432f'/%3E%3Ccircle cx='38' cy='13' r='9' fill='%23f08a24'/%3E%3Ccircle cx='55' cy='16' r='9' fill='%237a9a4c'/%3E%3Crect x='4' y='20' width='64' height='30' rx='3' fill='%23b27447' stroke='%236a3b24' stroke-width='2'/%3E%3Cpath d='M4 30h64M4 40h64' stroke='%236a3b24' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 22px bottom 12px/68px auto}
+
+/* arrows live inside the shelf, straddling the uprights */
+.shelf-frame .shelf-arrow{position:absolute;top:44%;margin-top:-19px;z-index:6;width:38px;height:38px;display:grid;place-items:center;padding:0 0 3px;
+  font-size:22px;line-height:1;border:1.5px solid #cdb995;border-radius:50%;background:rgba(255,253,248,.96);color:var(--ink);
+  box-shadow:0 4px 10px rgba(60,35,20,.28);transition:transform .22s var(--ease),background-color .2s var(--ease),color .2s var(--ease),opacity .25s var(--ease),box-shadow .2s var(--ease)}
+.shelf-arrow-prev{left:-15px}.shelf-arrow-next{right:-15px}
+.shelf-frame .shelf-arrow:hover{background:var(--terra);border-color:var(--terra);color:#fff;transform:scale(1.1);box-shadow:0 6px 14px rgba(120,50,30,.35)}
+.shelf-frame .shelf-arrow:active{transform:scale(.94)}
+.shelf-frame .shelf-arrow.off{opacity:0;pointer-events:none;transform:scale(.8)}
+.department-actions{gap:0}
 
 /* ---------- Realistic supermarket shelving ---------- */
 .shelf-frame{padding:0 0 22px;margin:0 2px;overflow:visible}
@@ -319,7 +346,7 @@ footer{font-size:11px;gap:12px 20px;padding-top:26px;padding-bottom:30px}
   background:linear-gradient(90deg,#8a5538,#c68b5c 45%,#9a6241 80%,#7a4a30) left top/10px 100% no-repeat,
     linear-gradient(90deg,#7a4a30,#9a6241 20%,#c68b5c 55%,#8a5538) right top/10px 100% no-repeat;
   box-shadow:2px 0 4px -1px rgba(60,35,20,.25) inset}
-.shelf-scroll{position:relative;z-index:2;padding:26px 22px 12px;overscroll-behavior-inline:contain}
+.shelf-scroll{position:relative;z-index:2;scroll-padding-inline:22px;padding:26px 22px 12px;overscroll-behavior-inline:contain}
 
 /* the board: top surface, front face, price rail, grain, layered shadows */
 .shelf-track{position:absolute;left:0;right:0;bottom:8px;height:34px;z-index:1;border-radius:3px 3px 2px 2px;
@@ -362,16 +389,88 @@ footer{font-size:11px;gap:12px 20px;padding-top:26px;padding-bottom:30px}
 
 /* ---------- Responsive ---------- */
 @media(max-width:760px){
-  .awning{--w:28px;margin:0 10px;height:24px}
-  .awning-valance{top:23px}
-  .awning-lantern{top:44px;width:12px;height:17px}.awning-lantern:before{height:16px}
-  .awning-sign{top:46px;font-size:8.5px;padding:5px 10px}
-  .awning+.market-floor{padding-top:66px;padding-bottom:78px}
-  .awning+.market-floor:after{background-size:42px auto,56px auto;background-position:left 12px bottom 12px,right 12px bottom 10px}
-  .shelf-scroll{padding:24px 18px 12px}
+  .shelf-scroll{padding:24px 18px 12px;scroll-padding-inline:18px}
   .shelf-label-wrap{right:12px}
   .product-add{width:32px;height:32px;right:4px;bottom:38px}
   .shelf-frame:before{border-radius:5px 5px 0 0}
 }
-@media(max-width:420px){.awning-lantern{display:none}}
 @media(prefers-reduced-motion:reduce){.awning-lantern,.awning-sign{animation:none}.awning-sign{transform:translateX(-50%)}}
+
+@media(max-width:760px){
+  .awning{--w:26px;height:20px}
+  .awning-valance{top:19px}
+  .awning-sign{top:36px;font-size:8px;padding:4px 9px;letter-spacing:.14em}
+  .awning-lantern{top:34px;width:12px;height:16px}.awning-lantern:before{height:14px}
+  .awning-bunting{top:32px;height:16px;-webkit-mask-size:18px 100%;mask-size:18px 100%}
+  .awning-bulbs{top:31px}
+  .department{margin-bottom:30px}
+  .department-head{padding-top:40px}
+  .market-floor{padding-top:18px;padding-bottom:78px}
+  .market-floor:after{background-size:42px auto,56px auto;background-position:left 12px bottom 12px,right 12px bottom 10px}
+  .shelf-frame .shelf-arrow{width:32px;height:32px;font-size:19px;padding-bottom:2px;margin-top:-16px}
+  .shelf-arrow-prev{left:-9px}.shelf-arrow-next{right:-9px}
+}
+@media(max-width:420px){.awning-lantern{display:none}.awning-sign{max-width:88%;overflow:hidden;text-overflow:ellipsis}}
+@media(prefers-reduced-motion:reduce){.awning-bulbs{animation:none}}
+
+/* ==========================================================================
+   Round 4 — floating wicker Basket
+   ========================================================================== */
+.basket-fab{position:fixed;right:clamp(14px,2.2vw,30px);bottom:clamp(14px,2.2vw,28px);z-index:30;width:104px;height:104px;padding:0;border:0;background:none;
+  cursor:pointer;transform-origin:50% 100%;transition:transform .32s var(--ease-spring),filter .25s var(--ease);
+  filter:drop-shadow(0 10px 7px rgba(60,35,20,.32));-webkit-tap-highlight-color:transparent}
+.basket-fab-inner{position:absolute;inset:0;display:block;animation:basketFloat 5.5s ease-in-out infinite}
+.basket-fab svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.bk-back{z-index:0}.bk-front{z-index:6}
+.bk-items{position:absolute;inset:0;z-index:1;pointer-events:none}
+.basket-fab:focus-visible{outline:2px solid var(--terra);outline-offset:6px;border-radius:14px}
+@media(hover:hover){.basket-fab:hover{transform:translateY(-5px) scale(1.05);filter:drop-shadow(0 16px 10px rgba(60,35,20,.34))}}
+.basket-fab:active{transform:scale(.96)}
+
+/* thumbnails piled inside the basket */
+.bk-item{position:absolute;display:block;width:30px;height:34px;transform:rotate(var(--r,0deg));
+  transition:left .45s var(--ease),bottom .45s var(--ease),transform .45s var(--ease),opacity .28s var(--ease);
+  filter:drop-shadow(0 1px 1px rgba(60,35,20,.4))}
+.bk-item svg{position:static;width:100%;height:100%;display:block}
+.bk-item.hold{opacity:0;transform:translateY(-26px) scale(.4) rotate(var(--r,0deg))}
+.bk-item.drop{animation:bkDrop .5s var(--ease-spring)}
+.bk-item.leaving{opacity:0;transform:translateY(-16px) scale(.5) rotate(var(--r,0deg));pointer-events:none}
+@keyframes bkDrop{0%{opacity:0;transform:translateY(-38px) scale(.5) rotate(calc(var(--r,0deg) - 22deg))}60%{opacity:1;transform:translateY(4px) scale(1.1) rotate(var(--r,0deg))}100%{opacity:1;transform:translateY(0) scale(1) rotate(var(--r,0deg))}}
+
+/* bounce when something lands */
+.basket-fab.bounce{animation:basketBounce .6s var(--ease)}
+@keyframes basketBounce{0%{transform:translateY(0) scale(1,1)}22%{transform:translateY(3px) scale(1.08,.9)}50%{transform:translateY(-14px) scale(.96,1.07)}76%{transform:translateY(0) scale(1.03,.97)}100%{transform:translateY(0) scale(1,1)}}
+@keyframes basketFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* count badge + hover label */
+.basket-fab-count{position:absolute;right:-4px;top:52px;z-index:8;min-width:25px;height:25px;padding:0 6px;display:grid;place-items:center;border-radius:13px;
+  background:var(--terra);color:#fff;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;border:2px solid #fffdf8;box-shadow:0 3px 8px rgba(120,50,30,.35)}
+.basket-fab.is-empty .basket-fab-count{display:none}
+.basket-fab-count.tick{animation:pop .4s var(--ease-spring)}
+.basket-fab-label{position:absolute;right:calc(100% - 4px);bottom:26px;z-index:8;white-space:nowrap;padding:8px 13px;border-radius:9px;background:#2f382d;color:#fff;
+  font-size:12px;font-weight:600;box-shadow:var(--shadow-md);opacity:0;transform:translateX(8px);pointer-events:none;transition:opacity .22s var(--ease),transform .25s var(--ease)}
+.basket-fab:focus-visible .basket-fab-label{opacity:1;transform:none}
+@media(hover:hover){.basket-fab:hover .basket-fab-label{opacity:1;transform:none}}
+
+/* the product that flies from the shelf into the basket */
+.fly-item{position:fixed;z-index:60;pointer-events:none;margin:0;transform-origin:50% 50%;will-change:transform;filter:drop-shadow(0 8px 8px rgba(60,35,20,.35))}
+.fly-item svg{display:block;width:100%;height:100%}
+
+/* keep content clear of the floating basket */
+footer{padding-bottom:calc(30px + 76px)}
+@media(max-width:760px){
+  .basket-fab{scale:.8;right:6px;bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .toast{bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+  .basket-fab-label{display:none}
+  footer{padding-bottom:calc(26px + 96px + env(safe-area-inset-bottom,0px))}
+}
+@media(prefers-reduced-motion:reduce){
+  .basket-fab-inner{animation:none}.basket-fab.bounce{animation:none}.bk-item.drop{animation:none}
+}
+
+/* Mobile hero: restore the room reserved for the shelf artwork
+   (the desktop padding rule above must not override the small-screen one). */
+@media(max-width:760px){
+  .hero-copy{padding:32px 25px 228px}
+  .hero{min-height:480px}
+}
