@@ -55,24 +55,49 @@ function art(p){
 export const productArt=art;
 function tag(p){if(!p.tag)return "";return `<span class="product-tag ${esc(p.tagType||"")}">${esc(p.tag)}</span>`}
 export function productMarkup(p){
- return `<article class="shelf-product" data-product="${esc(p.id)}" tabindex="0" role="button" aria-label="View ${esc(p.name)}"><button class="product-heart" data-heart="${esc(p.id)}" aria-label="Save ${esc(p.name)}">♡</button>${tag(p)}<button class="product-add" data-add="${esc(p.id)}" aria-label="Add ${esc(p.name)} to bag">+</button><div class="product-art">${art(p)}</div><span class="product-mini-name">${esc(p.name)}</span></article>`;
+ return `<article class="shelf-product" data-product="${esc(p.id)}" tabindex="0" role="button" aria-label="View ${esc(p.name)}"><button class="product-heart" data-heart="${esc(p.id)}" aria-label="Save ${esc(p.name)}">♡</button>${tag(p)}<button class="product-add" data-add="${esc(p.id)}" aria-label="Add ${esc(p.name)} to basket">+</button><div class="product-art">${art(p)}</div><span class="product-mini-name">${esc(p.name)}</span></article>`;
+}
+const THEMES={
+  "Groceries":["#b95e42","#71836b","FRESH DAILY ✳","lantern"],
+  "Fruits & Vegetables":["#71836b","#d5a44f","FARM FRESH ✿","bulbs"],
+  "Dairy & Eggs":["#6f93a8","#c98a6a","CHILLED & CREAMY","lantern"],
+  "Bakery":["#c98a3e","#b95e42","BAKED TODAY ✳","bunting"],
+  "Beverages":["#5f9ea0","#b95e42","SIP & SMILE","bulbs"],
+  "Snacks & Chocolates":["#b95e42","#d5a44f","TREAT YOURSELF","bunting"],
+  "Electronics":["#5b6b7a","#d5a44f","TECH CORNER","bulbs"],
+  "Gaming":["#7a5a8a","#5f9ea0","PLAYTIME ✦","bunting"],
+  "Fashion":["#c4788a","#71836b","NEW SEASON","lantern"],
+  "Home & Living":["#71836b","#b95e42","COSY HOME ✿","lantern"],
+  "Beauty & Personal Care":["#d08a8a","#a98a6a","SELF-CARE","bulbs"],
+  "Books & Stationery":["#8a5a3a","#71836b","STORY TIME","lantern"],
+  "Sports & Fitness":["#4f8a8a","#d5a44f","GET MOVING","bunting"],
+  "Toys & Collectibles":["#d5a44f","#5f9ea0","SMALL SMILES ✦","bunting"],
+  "Accessories":["#a8654a","#5f9ea0","FINISHING TOUCHES","bulbs"],
+  "Footwear":["#6a7a5a","#b95e42","STEP IN","lantern"],
+  "Pet Supplies":["#c9985a","#6f93a8","GOOD PETS WELCOME","bunting"],
+  "Automotive":["#5a6a60","#c8793a","ROAD READY","lantern"]
+};
+function awning(name){
+  const [a,c,sign,deco]=THEMES[name]||["#b95e42","#71836b","OPEN DAILY ✳","lantern"];
+  const hang=deco==="lantern"?'<span class="awning-lantern lantern-l"></span><span class="awning-lantern lantern-r"></span>':deco==="bunting"?'<span class="awning-bunting"></span>':'<span class="awning-bulbs"></span>';
+  return `<div class="awning deco-${deco}" aria-hidden="true" style="--a:${a};--c:${c}"><div class="awning-roof"></div><div class="awning-valance"></div>${hang}<span class="awning-sign">${sign}</span></div>`;
 }
 export function renderShelves({container,onProduct,onAdd,onHeart,compact=false}){
  const root=typeof container==="string"?document.querySelector(container):container;
  root.innerHTML=categories.map(([name,desc],i)=>{
    const items=products.filter(p=>p.category===name);
-   if(!items.length)return `<section class="department" id="dept-${i}" data-category="${esc(name)}"><header class="department-head"><div><span class="department-kicker">DEPARTMENT ${String(i+1).padStart(2,"0")}</span><h3 class="department-title">${esc(name)}</h3><p class="department-desc">${esc(desc)}</p></div></header><div class="empty-category">This aisle is being stocked — more lovely finds coming soon.</div></section>`;
-   return `<section class="department" id="dept-${i}" data-category="${esc(name)}"><header class="department-head"><div><span class="department-kicker">DEPARTMENT ${String(i+1).padStart(2,"0")}</span><h3 class="department-title">${esc(name)}</h3><p class="department-desc">${esc(desc)}</p></div><div class="department-actions"><button class="view-all" data-jump="${esc(name)}">View aisle ↗</button><button class="shelf-arrow" data-scroll="-1" aria-label="Scroll ${esc(name)} left">‹</button><button class="shelf-arrow" data-scroll="1" aria-label="Scroll ${esc(name)} right">›</button></div></header><div class="shelf-frame"><div class="shelf-scroll">${items.map(productMarkup).join("")}</div><div class="shelf-track"></div><div class="shelf-label-wrap"><span class="shelf-label">${esc(name)}</span></div></div><div class="shelf-progress"><span></span></div></section>`;
+   if(!items.length)return `<section class="department" id="dept-${i}" data-category="${esc(name)}">${awning(name)}<header class="department-head"><div><span class="department-kicker">DEPARTMENT ${String(i+1).padStart(2,"0")}</span><h3 class="department-title">${esc(name)}</h3><p class="department-desc">${esc(desc)}</p></div></header><div class="empty-category">This aisle is being stocked — more lovely finds coming soon.</div></section>`;
+   return `<section class="department" id="dept-${i}" data-category="${esc(name)}">${awning(name)}<header class="department-head"><div><span class="department-kicker">DEPARTMENT ${String(i+1).padStart(2,"0")}</span><h3 class="department-title">${esc(name)}</h3><p class="department-desc">${esc(desc)}</p></div><div class="department-actions"><button class="view-all" data-jump="${esc(name)}">View aisle ↗</button></div></header><div class="shelf-frame"><div class="shelf-scroll">${items.map(productMarkup).join("")}</div><button class="shelf-arrow shelf-arrow-prev" data-scroll="-1" aria-label="Scroll ${esc(name)} left">‹</button><button class="shelf-arrow shelf-arrow-next" data-scroll="1" aria-label="Scroll ${esc(name)} right">›</button><div class="shelf-track"></div><div class="shelf-label-wrap"><span class="shelf-label">${esc(name)}</span></div></div><div class="shelf-progress"><span></span></div></section>`;
  }).join("");
  root.querySelectorAll(".department").forEach(section=>{
    const scroller=section.querySelector(".shelf-scroll"); if(!scroller)return;
    const progress=section.querySelector(".shelf-progress span");
-   const update=()=>{const max=scroller.scrollWidth-scroller.clientWidth;progress.style.width=max>0?`${Math.max(12,scroller.clientWidth/scroller.scrollWidth*100)}%`:"100%";progress.style.transform=`translateX(${max>0?scroller.scrollLeft/max*(100-scroller.clientWidth/scroller.scrollWidth*100):0}%)`};
+   const update=()=>{const max=scroller.scrollWidth-scroller.clientWidth;progress.style.width=max>0?`${Math.max(12,scroller.clientWidth/scroller.scrollWidth*100)}%`:"100%";progress.style.transform=`translateX(${max>0?scroller.scrollLeft/max*(100-scroller.clientWidth/scroller.scrollWidth*100):0}%)`;const pv=section.querySelector(".shelf-arrow-prev"),nx=section.querySelector(".shelf-arrow-next");if(pv&&nx){pv.classList.toggle("off",max<=4||scroller.scrollLeft<=4);nx.classList.toggle("off",max<=4||scroller.scrollLeft>=max-4)}};
    scroller.addEventListener("scroll",update,{passive:true});new ResizeObserver(update).observe(scroller);update();
  });
  root.addEventListener("click",e=>{
    const heart=e.target.closest("[data-heart]");if(heart){e.stopPropagation();onHeart(heart.dataset.heart,heart);return}
-   const add=e.target.closest("[data-add]");if(add){const p=products.find(x=>x.id===add.dataset.add);if(p){onAdd(p);add.classList.add("added");add.textContent="✓";clearTimeout(add._t);add._t=setTimeout(()=>{add.classList.remove("added");add.textContent="+"},900)}return}
+   const add=e.target.closest("[data-add]");if(add){const p=products.find(x=>x.id===add.dataset.add);if(p){onAdd(p,add.closest("[data-product]")?.querySelector(".product-art")||add);add.classList.add("added");add.textContent="✓";clearTimeout(add._t);add._t=setTimeout(()=>{add.classList.remove("added");add.textContent="+"},900)}return}
    const scroll=e.target.closest("[data-scroll]");if(scroll){const sc=scroll.closest(".department").querySelector(".shelf-scroll");sc.scrollBy({left:Number(scroll.dataset.scroll)*Math.max(250,sc.clientWidth*.75),behavior:"smooth"});return}
    const jump=e.target.closest("[data-jump]");if(jump){document.querySelector(`[data-category="${CSS.escape(jump.dataset.jump)}"]`)?.scrollIntoView({behavior:"smooth",block:"start"});return}
    const card=e.target.closest("[data-product]");if(card)onProduct(products.find(p=>p.id===card.dataset.product));

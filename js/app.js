@@ -1,22 +1,25 @@
 import { products, categories } from "./products.js";
 import { renderShelves,renderChips,productArt } from "./shelves.js";
-import { readCart,addToCart,setQty,cartSummary } from "./cart.js";
+import { readBasket,addToBasket,setQty,basketSummary } from "./basket.js";
 import { readWishlist,toggleWishlist } from "./wishlist.js";
+import { createBasketFab } from "./basket-fab.js";
 import { showProduct } from "./product-details.js";
 
 const $=s=>document.querySelector(s);let toastTimer;
 function money(n){return "₹"+n.toLocaleString("en-IN")}
 function toast(msg){const el=$("#toast");el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2200)}
-function refreshHeader(){const s=cartSummary(products);$("#cartCount").textContent=s.count;$("#cartTotal").textContent=money(s.total);$("#wishlistCount").textContent=readWishlist().length}
-function add(product){addToCart(product);refreshHeader();renderCart();toast(`${product.name} added to your bag`)}
+function refreshHeader(){const s=basketSummary(products);$("#basketCount").textContent=s.count;$("#basketTotal").textContent=money(s.total);$("#wishlistCount").textContent=readWishlist().length}
+function basketEntries(){return Object.entries(readBasket()).map(([id,qty])=>({product:products.find(p=>p.id===id),qty})).filter(e=>e.product&&e.qty>0)}
+function syncBasket(){refreshHeader();renderBasket();return fab.render(basketEntries())}
+function add(product,source){addToBasket(product);refreshHeader();renderBasket();const keys=fab.render(basketEntries(),{hold:!!source});if(source)fab.fly(product,source,keys);else fab.settle(keys);toast(`${product.name} added to your basket`)}
 function openDrawer(id){closePanels();$("#overlay").classList.remove("hidden");$(id).classList.remove("hidden")}
-function closePanels(){["#cartDrawer","#wishlistDrawer","#notificationDrawer","#productModal"].forEach(s=>$(s).classList.add("hidden"));$("#overlay").classList.add("hidden")}
-function renderCart(){
- const {cart,total,count}=cartSummary(products),el=$("#cartItems");$("#drawerCount").textContent=`(${count})`;$("#drawerSubtotal").textContent=money(total);
+function closePanels(){["#basketDrawer","#wishlistDrawer","#notificationDrawer","#productModal"].forEach(s=>$(s).classList.add("hidden"));$("#overlay").classList.add("hidden")}
+function renderBasket(){
+ const {basket,total,count}=basketSummary(products),el=$("#basketItems");$("#drawerCount").textContent=`(${count})`;$("#drawerSubtotal").textContent=money(total);
  $("#deliveryNote").textContent=total>=799?"Lovely! You've unlocked free demo delivery.":`Add ${money(799-total)} more to unlock free demo delivery.`;
- const entries=Object.entries(cart).filter(([id])=>products.some(p=>p.id===id));
- el.innerHTML=entries.length?entries.map(([id,qty])=>{const p=products.find(x=>x.id===id);return `<div class="cart-row"><div class="cart-thumb">${miniArt(p)}</div><div><h4>${p.name}</h4><small>${money(p.price)} · ${p.brand}</small><div class="qty-control"><button data-qty="${id}" data-delta="-1">−</button><b>${qty}</b><button data-qty="${id}" data-delta="1">+</button></div></div><b>${money(p.price*qty)}</b></div>`}).join(""):`<div class="empty-state"><b>Your bag is taking a little nap.</b>Find something lovely on the shelves and it will appear here.</div>`;
- el.querySelectorAll("[data-qty]").forEach(b=>b.onclick=()=>{setQty(b.dataset.qty,cart[b.dataset.qty]+Number(b.dataset.delta));renderCart();refreshHeader()});
+ const entries=Object.entries(basket).filter(([id])=>products.some(p=>p.id===id));
+ el.innerHTML=entries.length?entries.map(([id,qty])=>{const p=products.find(x=>x.id===id);return `<div class="basket-row"><div class="basket-thumb">${miniArt(p)}</div><div><h4>${p.name}</h4><small>${money(p.price)} · ${p.brand}</small><div class="qty-control"><button data-qty="${id}" data-delta="-1">−</button><b>${qty}</b><button data-qty="${id}" data-delta="1">+</button></div></div><b>${money(p.price*qty)}</b></div>`}).join(""):`<div class="empty-state"><b>Your basket is taking a little nap.</b>Find something lovely on the shelves and it will appear here.</div>`;
+ el.querySelectorAll("[data-qty]").forEach(b=>b.onclick=()=>{const delta=Number(b.dataset.delta);setQty(b.dataset.qty,basket[b.dataset.qty]+delta);refreshHeader();renderBasket();const keys=fab.render(basketEntries());if(delta>0)fab.settle(keys)});
 }
 function miniArt(p){return productArt(p)}
 function renderWishlist(){const list=readWishlist().map(id=>products.find(p=>p.id===id)).filter(Boolean);$("#wishlistItems").innerHTML=list.length?list.map(p=>`<div class="wishlist-row"><div class="wishlist-thumb">${miniArt(p)}</div><div><h4>${p.name}</h4><small>${money(p.price)}</small></div><button class="remove-button" data-unwish="${p.id}">Remove</button></div>`).join(""):`<div class="empty-state"><b>Keep a little list.</b>Tap the heart on a product to save it for later.</div>`;$("#wishlistItems").querySelectorAll("[data-unwish]").forEach(b=>{b.onclick=()=>{toggleWishlist(b.dataset.unwish);renderWishlist();refreshHeader()}})}
@@ -26,7 +29,7 @@ renderShelves({container:"#shelvesContainer",onProduct:p=>showProduct(p,add,read
 readWishlist().forEach(id=>document.querySelectorAll(`[data-heart="${CSS.escape(id)}"]`).forEach(b=>{b.classList.add("saved");b.textContent="♥"}));
 renderChips(name=>{if(name==="all"){$("#shelvesContainer").querySelectorAll(".department").forEach(x=>x.classList.remove("filtered-out"));return}$("#shelvesContainer").querySelectorAll(".department").forEach(x=>x.classList.toggle("filtered-out",x.dataset.category!==name));const target=document.querySelector(`[data-category="${CSS.escape(name)}"]`);target?.scrollIntoView({behavior:"smooth",block:"center"})});
 $("#categoryChips").addEventListener("click",e=>{if(e.target.dataset.chip==="all")$("#shelvesContainer").querySelectorAll(".department").forEach(x=>x.classList.remove("filtered-out"))});
-$("#cartOpen").onclick=()=>{renderCart();openDrawer("#cartDrawer")};
+$("#basketOpen").onclick=()=>{renderBasket();openDrawer("#basketDrawer")};
 $("#wishlistOpen").onclick=()=>{renderWishlist();openDrawer("#wishlistDrawer")};
 $("#notificationsOpen").onclick=()=>openDrawer("#notificationDrawer");
 $("#overlay").onclick=closePanels;document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closePanels);
@@ -41,4 +44,6 @@ document.addEventListener("click",e=>{if(!e.target.closest(".searchbox"))suggest
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanels();if(e.key==="/"&&!["INPUT","TEXTAREA"].includes(document.activeElement.tagName)){e.preventDefault();search.focus()}});
 $("#mobileMenu").onclick=()=>$("#categoryChips").scrollIntoView({behavior:"smooth"});
 $("#shelfCount").textContent=`${categories.length} departments`;
-refreshHeader();renderCart();
+const fab=createBasketFab({onOpen:()=>{renderBasket();openDrawer("#basketDrawer")}});
+syncBasket();
+window.addEventListener("storage",()=>{syncBasket()});
